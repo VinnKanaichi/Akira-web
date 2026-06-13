@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Setor Gmail - Akira</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg: #fff5f9;
+  --s1: #ffeaf4;
+  --s2: #ffd9e9;
+  --s3: #ffc6dc;
+  --b1: rgba(255, 105, 180, 0.12);
+  --b2: rgba(255, 105, 180, 0.25);
+  --b3: rgba(255, 105, 180, 0.4);
+  --t1: #4b1b36;
+  --t2: #9c4b75;
+  --t3: #d894b8;
+  --pink: #ff69b4;
+  --pink2: #ff8fc9;
+  --ungu: #d4b3ff;
+  --biru: #b3d9ff;
+  --kuning: #ffe8b3;
+  --glow: rgba(255, 105, 180, 0.25);
+  --r: 18px;
+  --r-sm: 12px;
+}
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body{
+  min-height: 100%;
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #fff0f7 0%, #ffe5f2 100%);
+  color: var(--t1);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Partikel - DIPERBESAR & DIPERTEBAL */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* LOADER */
+#loader{
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: linear-gradient(135deg, #fff5f9 0%, #ffeaf4 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  transition: opacity .7s ease, visibility .7s ease;
+}
+
+#loader.bye{
+  opacity: 0;
+  visibility: hidden;
+}
+
+.l-logo{
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{ transform: translateY(0) rotate(0deg); }
+  50%{ transform: translateY(-10px) rotate(5deg); }
+}
+
+.l-ring{
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--bg), var(--bg)) padding-box,
+              conic-gradient(from 0deg, transparent 0%, transparent 35%, var(--pink) 60%, #ffb6e0 85%, transparent 100%) border-box;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin{
+  to{ transform: rotate(360deg); }
+}
+
+.l-glow{
+  position: absolute;
+  inset: -13px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 105, 180, 0.18);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{ transform: scale(1); opacity: .5; }
+  50%{ transform: scale(1.1); opacity: .8; }
+}
+
+.l-ico{
+  width: 38px;
+  height: 38px;
+  fill: var(--pink);
+  filter: drop-shadow(0 0 15px rgba(255, 105, 180, 0.5));
+}
+
+.l-text-wrap{
+  text-align: center;
+}
+
+.l-title{
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 8px;
+}
+
+.l-sub{
+  font-size: 13px;
+  color: var(--t2);
+  margin-bottom: 12px;
+}
+
+.l-dots{
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.l-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pink);
+  opacity: .25;
+  animation: dot 1.3s ease-in-out infinite;
+}
+
+.l-dot:nth-child(2){ animation-delay: .2s; }
+.l-dot:nth-child(3){ animation-delay: .4s; }
+
+@keyframes dot{
+  0%,100%{ opacity: .25; transform: scale(1); }
+  50%{ opacity: 1; transform: scale(1.5); }
+}
+
+/* BUBBLE INFO */
+.bubble{
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  width: 90%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(255, 105, 180, 0.2);
+  border: 1px solid var(--b2);
+  z-index: 9999;
+  transition: transform .5s cubic-bezier(.34, 1.5, .64, 1);
+}
+
+.bubble.show{
+  transform: translateX(-50%) translateY(0);
+}
+
+.bubble h4{
+  color: var(--pink);
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.bubble p{
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--t2);
+}
+
+.bubble .close{
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--t3);
+  cursor: pointer;
+  transition: color .2s;
+}
+
+.bubble .close:hover{
+  color: var(--pink);
+}
+
+/* APP - ANIMASI MUNCUL PERLAHAN DARI ATAS KE BAWAH */
+#app{
+  position: relative;
+  z-index: 1;
+  padding: 30px 18px 70px;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.hdr{
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDown 0.8s ease-out 0.2s forwards;
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.card{
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideDown 0.7s ease-out forwards;
+  background: #fff;
+  border-radius: var(--r);
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 18px rgba(255, 105, 180, 0.1);
+  border: 1px solid var(--b1);
+  transition: all .3s ease;
+}
+
+.card:nth-child(1) { animation-delay: 0.6s; }
+.card:nth-child(2) { animation-delay: 1.0s; }
+.card:nth-child(3) { animation-delay: 1.4s; }
+
+.btn-sub {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideDown 0.7s ease-out 1.8s forwards;
+  width: 100%;
+  padding: 17px;
+  background: linear-gradient(135deg, #ff69b4 0%, #ff8fc9 100%);
+  border: none;
+  border-radius: var(--r-sm);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all .3s ease;
+  box-shadow: 0 5px 22px rgba(255, 105, 180, 0.25);
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.copyright {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideDown 0.7s ease-out 2.2s forwards;
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--b1);
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hdr-ico{
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffe0ee, #ffc6dc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  box-shadow: 0 4px 20px rgba(255, 105, 180, 0.2);
+  border: 2px solid #ffd9e9;
+  animation: gentleFloat 4s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+.hdr-ico svg{
+  width: 35px;
+  height: 35px;
+  fill: var(--pink);
+}
+
+.hdr h1{
+  font-size: 27px;
+  font-weight: 800;
+  color: var(--pink);
+  margin-bottom: 8px;
+  animation: glowText 3s ease-in-out infinite;
+}
+
+@keyframes glowText {
+  0%, 100% { text-shadow: 0 0 5px rgba(255, 105, 180, 0.3); }
+  50% { text-shadow: 0 0 12px rgba(255, 105, 180, 0.5); }
+}
+
+.hdr p{
+  font-size: 14px;
+  color: var(--t2);
+  line-height: 1.7;
+}
+
+.card:hover{
+  border-color: var(--b2);
+  box-shadow: 0 6px 24px rgba(255, 105, 180, 0.15);
+  transform: translateY(-2px);
+}
+
+.c-head{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.c-ico{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--s1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.c-ico svg{
+  width: 17px;
+  height: 17px;
+  fill: var(--pink);
+}
+
+.c-lbl{
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--t2);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+/* INPUT */
+.fld{
+  margin-bottom: 14px;
+}
+
+.fld:last-child{
+  margin-bottom: 0;
+}
+
+.fld label{
+  display: block;
+  font-size: 12px;
+  color: var(--t2);
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+
+.fld input{
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r-sm);
+  color: var(--t1);
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: all .25s ease;
+}
+
+.fld input:focus{
+  border-color: var(--b3);
+  box-shadow: 0 0 0 3px var(--glow);
+  background: #fff;
+  transform: scale(1.01);
+}
+
+.fld input::placeholder{
+  color: var(--t3);
+}
+
+/* GMAIL ROWS */
+.grow{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  animation: pop 0.4s cubic-bezier(.34, 1.5, .64, 1) both;
+}
+
+@keyframes pop{
+  from{ transform: scale(.95); opacity: 0; }
+  to{ transform: scale(1); opacity: 1; }
+}
+
+.gnum{
+  min-width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--s2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--t2);
+  flex-shrink: 0;
+}
+
+.grow input{
+  flex: 1;
+  padding: 12px 14px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r-sm);
+  color: var(--t1);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all .25s ease;
+}
+
+.grow input:focus{
+  border-color: var(--b3);
+  box-shadow: 0 0 0 3px var(--glow);
+  background: #fff;
+}
+
+.btn-rm{
+  background: #ffe6ef;
+  border: 1px solid #ffc9da;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #e84a7a;
+  transition: all .2s ease;
+}
+
+.btn-rm:hover{
+  background: #ffd9e9;
+  border-color: #ff94b8;
+  transform: scale(1.1) rotate(90deg);
+}
+
+.btn-add{
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1.5px dashed var(--b2);
+  border-radius: var(--r-sm);
+  color: var(--t2);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all .25s ease;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-add:hover{
+  border-color: var(--pink);
+  color: var(--pink);
+  background: rgba(255, 105, 180, 0.06);
+  transform: translateY(-1px);
+}
+
+.gcnt{
+  font-size: 12px;
+  color: var(--t3);
+  text-align: right;
+  margin-top: 8px;
+}
+
+.btn-sub::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.2), transparent);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+.btn-sub:hover{
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 9px 32px rgba(255, 105, 180, 0.35);
+}
+
+.btn-sub:hover::after{
+  opacity: 1;
+}
+
+.btn-sub:active{
+  transform: scale(.98);
+}
+
+.btn-sub:disabled{
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spin{
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  animation: spr .7s linear infinite;
+}
+
+@keyframes spr{
+  to{ transform: rotate(360deg); }
+}
+
+.copyright p{
+  font-size: 12px;
+  color: var(--t3);
+  line-height: 1.6;
+}
+
+.copyright strong{
+  color: var(--pink);
+  font-weight: 600;
+}
+
+/* TOAST */
+.toast{
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(90px);
+  padding: 14px 22px;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform .4s cubic-bezier(.34, 1.4, .64, 1);
+  z-index: 9999;
+  box-shadow: 0 10px 32px rgba(0,0,0,.12);
+  max-width: 90%;
+}
+
+.toast.show{
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.ok{
+  background: #f0fff4;
+  border: 1px solid #b9f2c9;
+  color: #22863a;
+}
+
+.toast.err{
+  background: #fff5f7;
+  border: 1px solid #ffcdd7;
+  color: #b32b4a;
+}
+</style>
+</head>
+<body>
+
+<!-- Kanvas Partikel - LEBIH JELAS -->
+<canvas id="particles"></canvas>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-logo">
+    <div class="l-glow"></div>
+    <div class="l-ring"></div>
+    <svg class="l-ico" viewBox="0 0 24 24">
+      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+    </svg>
+  </div>
+  <div class="l-text-wrap">
+    <p class="l-title">Memuat Sistem</p>
+    <p class="l-sub">Tunggu sebentar ya... 🎀</p>
+  </div>
+  <div class="l-dots">
+    <div class="l-dot"></div><div class="l-dot"></div><div class="l-dot"></div>
+  </div>
+</div>
+
+<!-- BUBBLE INFO -->
+<div class="bubble" id="infoBubble">
+  <button class="close" onclick="closeBubble()">×</button>
+  <h4>✨ Mau Buat Website Seperti Ini?</h4>
+  <p>Hubungi nomor di bawah ini untuk pemesanan dan info lebih lanjut:<br><br>
+  📞 <strong>08388198229</strong></p>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-ico">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+    </div>
+    <h1>Setor Gmail Akira</h1>
+    <p>Kirim data Gmail Anda dengan aman dan mudah</p>
+  </div>
+
+  <!-- FORM DATA -->
+  <div class="card">
+    <div class="c-head">
+      <div class="c-ico">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 3c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <span class="c-lbl">Data Pengirim</span>
+    </div>
+    <div class="fld">
+      <label>NAMA LENGKAP</label>
+      <input type="text" id="nama" placeholder="Masukkan nama lengkap"/>
+    </div>
+    <div class="fld">
+      <label>NOMOR AKTIF</label>
+      <input type="tel" id="nomor" placeholder="Contoh: 081234567890"/>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="c-head">
+      <div class="c-ico">
+        <svg viewBox="0 0 24 24">
+          <path d="M11 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1h-3v-1h4v-2h-4V7h-2v1H8c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3v1H7v2h4v1zm1 5c-5.52 0-10-4.48-10-10S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"/>
+        </svg>
+      </div>
+      <span class="c-lbl">Data Pembayaran</span>
+    </div>
+    <div class="fld">
+      <label>NOMOR PAYMENT</label>
+      <input type="tel" id="noPayment" placeholder="Nomor Dana/OVO/GoPay"/>
+    </div>
+    <div class="fld">
+      <label>NAMA PAYMENT</label>
+      <input type="text" id="namaPayment" placeholder="Nama terdaftar di akun"/>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="c-head">
+      <div class="c-ico">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+      </div>
+      <span class="c-lbl">Daftar Gmail</span>
+    </div>
+    <div id="glist"></div>
+    <button class="btn-add" id="btnadd" onclick="tambahGmail()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      Tambah Gmail
+    </button>
+    <p class="gcnt" id="gcnt">1 dari maksimal 10 Gmail</p>
+  </div>
+
+  <button class="btn-sub" id="bsub" onclick="kirimData()">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+    </svg>
+    Kirim Data
+  </button>
+
+  <!-- COPYRIGHT -->
+  <div class="copyright">
+    <p>© 2025 <strong>Setor Gmail Akira</strong><br>
+    Created by <strong>@Vinn / Putra</strong> • All Rights Reserved<br>
+    Made with 💖 & By Furina Team</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Konfigurasi Telegram
+const BOT_TOKEN = '8397469499:AAGqOi9ukNfblJh_af9dla0rTIWS0HZ6eGk';
+const CHAT_ID   = '6960804569';
+
+// Partikel - DIPERBESAR & LEBIH TERANG
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    particles = [];
+    const count = Math.floor(W * H / 6000); // Lebih banyak sedikit
+    const shapes = ['circle', 'heart', 'star'];
+    const colors = ['#ff94c9', '#c4a3ff', '#a3c9ff', '#ffdd99']; // Lebih terang
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        size: Math.random() * 8 + 4, // LEBIH BESAR & TEBAL
+        speedX: (Math.random() - 0.5) * 0.25,
+        speedY: (Math.random() - 0.5) * 0.25,
+        shape: shapes[Math.floor(Math.random() * shapes.length)],
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: Math.random() * 0.7 + 0.4, // LEBIH JELAS
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function drawHeart(x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x, y + size / 4);
+    ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + size / 4);
+    ctx.bezierCurveTo(x - size / 2, y + size / 2, x, y + size * 0.75, x, y + size);
+    ctx.bezierCurveTo(x, y + size * 0.75, x + size / 2, y + size / 2, x + size / 2, y + size / 4);
+    ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + size / 4);
+    ctx.fill();
+  }
+
+  function drawStar(x, y, size) {
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+      const xPoint = x + Math.cos(angle) * size;
+      const yPoint = y + Math.sin(angle) * size;
+      i === 0 ? ctx.moveTo(xPoint, yPoint) : ctx.lineTo(xPoint, yPoint);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.pulse += 0.015;
+
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+
+      const currentOpacity = p.opacity * (0.7 + 0.3 * Math.sin(p.pulse));
+      ctx.fillStyle = `${p.color}${Math.round(currentOpacity * 255).toString(16).padStart(2, '0')}`;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      const scale = 0.9 + 0.2 * Math.sin(p.pulse);
+      ctx.scale(scale, scale);
+
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.shape === 'heart') {
+        drawHeart(0, 0, p.size);
+      } else if (p.shape === 'star') {
+        drawStar(0, 0, p.size);
+      }
+
+      ctx.restore();
+    });
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  createParticles();
+  animate();
+  window.addEventListener('resize', () => { resize(); createParticles(); });
+})();
+
+// Loader & Tampilan
+setTimeout(() => {
+  document.getElementById('loader').classList.add('bye');
+  setTimeout(() => {
+    document.getElementById('infoBubble').classList.add('show');
+  }, 1500);
+}, 2000);
+
+function closeBubble(){
+  document.getElementById('infoBubble').classList.remove('show');
+}
+
+// State Gmail
+let jumlahGmail = 0;
+
+function tambahGmail(){
+  if(jumlahGmail >= 10) return tampilPesan('Maksimal hanya 10 Gmail ya! 🎀', true);
+  jumlahGmail++;
+  const list = document.getElementById('glist');
+  const baris = document.createElement('div');
+  baris.className = 'grow';
+  baris.id = `gmailRow${jumlahGmail}`;
+  baris.innerHTML = `
+    <div class="gnum">${jumlahGmail}</div>
+    <input type="email" id="gmail${jumlahGmail}" placeholder="contoh@gmail.com" required/>
+    ${jumlahGmail > 1 ? `<button class="btn-rm" onclick="hapusGmail(this)">×</button>` : ''}
+  `;
+  list.appendChild(baris);
+  updateCounter();
+  document.getElementById(`gmail${jumlahGmail}`).focus();
+}
+
+function hapusGmail(tombol){
+  tombol.closest('.grow').remove();
+  renumberGmail();
+  updateCounter();
+}
+
+function renumberGmail(){
+  const semuaBaris = document.querySelectorAll('#glist .grow');
+  jumlahGmail = semuaBaris.length;
+  semuaBaris.forEach((baris, indeks) => {
+    const nomor = indeks + 1;
+    baris.id = `gmailRow${nomor}`;
+    baris.querySelector('.gnum').textContent = nomor;
+    const input = baris.querySelector('input');
+    input.id = `gmail${nomor}`;
+  });
+}
+
+function updateCounter(){
+  const total = document.querySelectorAll('#glist .grow').length;
+  document.getElementById('gcnt').textContent = `${total} dari maksimal 10 Gmail`;
+  document.getElementById('btnadd').style.display = total >= 10 ? 'none' : 'flex';
+}
+
+// Kirim Data ke Telegram
+async function kirimData(){
+  const nama = document.getElementById('nama').value.trim();
+  const nomor = document.getElementById('nomor').value.trim();
+  const noPayment = document.getElementById('noPayment').value.trim();
+  const namaPayment = document.getElementById('namaPayment').value.trim();
+  const listGmail = Array.from(document.querySelectorAll('#glist input[type=email]'))
+                        .map(i => i.value.trim()).filter(Boolean);
+
+  if(!nama) return tampilPesan('Nama lengkap wajib diisi ya! 🎀', true);
+  if(!nomor) return tampilPesan('Nomor aktif tidak boleh kosong! 📱', true);
+  if(!noPayment) return tampilPesan('Nomor payment harus diisi! 💳', true);
+  if(!namaPayment) return tampilPesan('Nama pemilik akun payment wajib ada! ✨', true);
+  if(listGmail.length === 0) return tampilPesan('Minimal masukkan 1 Gmail ya! 📧', true);
+
+  const tombol = document.getElementById('bsub');
+  tombol.disabled = true;
+  tombol.innerHTML = '<div class="spin"></div> Mengirim...';
+
+  const teksGmail = listGmail.map((g, i) => `• ${i+1}. ${g}`).join('\n');
+  const pesan = `
+🎀 *DATA SETOR GMAIL* 🎀
+━━━━━━━━━━━━━━━━━━
+👤 *Nama:* ${nama}
+📱 *Nomor Aktif:* ${nomor}
+💳 *Nomor Payment:* ${noPayment}
+📝 *Nama Payment:* ${namaPayment}
+━━━━━━━━━━━━━━━━━━
+📧 *Daftar Gmail (${listGmail.length}):*
+${teksGmail}
+━━━━━━━━━━━━━━━━━━
+_Dikirim dari Website Setor Gmail_
+  `;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: pesan,
+        parse_mode: 'Markdown'
+      })
+    });
+
+    if(!res.ok) throw new Error('Gagal terhubung ke server');
+
+    tampilPesan('✅ Data berhasil dikirim ke Telegram! Terima kasih 🎀');
+    setTimeout(resetForm, 2000);
+
+  } catch(err) {
+    console.error('Error:', err);
+    tampilPesan('❌ Gagal mengirim! Cek koneksi internet atau coba lagi nanti', true);
+  } finally {
+    tombol.disabled = false;
+    tombol.innerHTML = `
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg> Kirim Data
+    `;
+  }
+}
+
+function resetForm(){
+  document.getElementById('nama').value = '';
+  document.getElementById('nomor').value = '';
+  document.getElementById('noPayment').value = '';
+  document.getElementById('namaPayment').value = '';
+  document.getElementById('glist').innerHTML = '';
+  jumlahGmail = 0;
+  tambahGmail();
+}
+
+function tampilPesan(teks, isError = false){
+  const toast = document.getElementById('toast');
+  toast.textContent = teks;
+  toast.className = `toast show ${isError ? 'err' : 'ok'}`;
+  setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+// Inisialisasi
+tambahGmail();
+</script>
+</body>
+</html>
