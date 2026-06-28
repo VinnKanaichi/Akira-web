@@ -718,13 +718,6 @@ html, body{
 // ==============================================
 // ✅ BAGIAN INI SUDAH DISET UNTUK 2 ID TELEGRAM
 // ==============================================
-  const BOT_TOKEN = process.env.BOT_TOKEN;
-
-const CHAT_IDS = [
-  process.env.CHAT_ID_1,
-  process.env.CHAT_ID_2,
-].filter(Boolean);
-// ==============================================
 
 // Partikel
 (function(){
@@ -875,26 +868,24 @@ function updateCounter(){
   document.getElementById('btnadd').style.display = total >= 10 ? 'none' : 'flex';
 }
 
-// Fungsi kirim ke SEMUA ID
 async function kirimKeSemua(pesan) {
-  let semuaBerhasil = true;
-  for (const id of CHAT_IDS) {
-    try {
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: id,
-          text: pesan,
-          parse_mode: 'Markdown'
-        })
-      });
-    } catch (err) {
-      console.error(`Gagal kirim ke ID ${id}:`, err);
-      semuaBerhasil = false;
-    }
+  try {
+    const res = await fetch("/api/telegram", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        pesan
+      })
+    });
+
+    const data = await res.json();
+    return data.success;
+  } catch (err) {
+    console.error(err);
+    return false;
   }
-  return semuaBerhasil;
 }
 
 async function kirimData(){
