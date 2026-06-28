@@ -718,12 +718,12 @@ html, body{
 // ==============================================
 // ✅ BAGIAN INI SUDAH DISET UNTUK 2 ID TELEGRAM
 // ==============================================
-const BOT_TOKEN = '8397469499:AAGqOi9ukNfblJh_af9dla0rTIWS0HZ6eGk';
-// GANTI ID KEDUA DI BAWAH INI SESUAI MILIKMU
+  const BOT_TOKEN = process.env.BOT_TOKEN;
+
 const CHAT_IDS = [
-  '-',   // ID Pertama (sudah ada)
-  '-'     // ID Kedua (Ganti ini!)
-];
+  process.env.CHAT_ID_1,
+  process.env.CHAT_ID_2,
+].filter(Boolean);
 // ==============================================
 
 // Partikel
