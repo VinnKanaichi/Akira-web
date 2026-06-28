@@ -8,7 +8,10 @@ export default async function handler(req, res) {
     });
   }
 
-  // Ambil cookie session
+  // =========================
+  // VALIDASI SESSION
+  // =========================
+
   const cookie = req.headers.cookie || "";
   const match = cookie.match(/session=([^;]+)/);
 
@@ -31,7 +34,6 @@ export default async function handler(req, res) {
 
   const [timestamp, nonce, signature] = parts;
 
-  // Cek umur session (20 detik)
   if (Date.now() - Number(timestamp) > 20000) {
     return res.status(403).json({
       success: false,
@@ -39,7 +41,6 @@ export default async function handler(req, res) {
     });
   }
 
-  // Verifikasi HMAC
   const payload = `${timestamp}.${nonce}`;
 
   const expected = crypto
@@ -54,6 +55,46 @@ export default async function handler(req, res) {
     });
   }
 
+  // =========================
+  // CLOUDFARE TURNSTILE
+  // =========================
+
+  const { pesan, token } = req.body;
+
+  if (!token) {
+    return res.status(403).json({
+      success: false,
+      message: "Token Turnstile tidak ditemukan."
+    });
+  }
+
+  const verify = await fetch(
+    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        secret: process.env.TURNSTILE_SECRET,
+        response: token
+      })
+    }
+  );
+
+  const result = await verify.json();
+
+  if (!result.success) {
+    return res.status(403).json({
+      success: false,
+      message: "Verifikasi Cloudflare gagal."
+    });
+  }
+
+  // =========================
+  // TELEGRAM
+  // =========================
+
   const BOT_TOKEN = process.env.BOT_TOKEN;
 
   const CHAT_IDS = [
@@ -61,73 +102,44 @@ export default async function handler(req, res) {
     process.env.CHAT_ID_2
   ].filter(Boolean);
 
-  const { pesan, token } = req.body;
-
-const verify = await fetch(
-  "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams({
-      secret: process.env.TURNSTILE_SECRET,
-      response: token
-    })
-  }
-);
   let semuaBerhasil = true;
 
-for (const id of CHAT_IDS) {
-  try {
-    const response = await fetch(
-      `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          chat_id: id,
-          text: pesan,
-          parse_mode: "Markdown"
-        })
+  for (const id of CHAT_IDS) {
+    try {
+      const response = await fetch(
+        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            chat_id: id,
+            text: pesan,
+            parse_mode: "Markdown"
+          })
+        }
+      );
+
+      if (!response.ok) {
+        semuaBerhasil = false;
       }
-    );
-
-    if (!response.ok) {
-      semuaBerhasil = false;
-    }
-
-  } catch (err) {
-    console.error(err);
-    semuaBerhasil = false;
-  }
-}
-
-const result = await verify.json();
-
-if (!result.success) {
-  return res.status(403).json({
-    success: false,
-    message: "Verifikasi Cloudflare gagal."
-  });
-}
-
-      if (!response.ok) semuaBerhasil = false;
     } catch (err) {
       console.error(err);
       semuaBerhasil = false;
     }
   }
 
-  // Hapus cookie setelah request
+  // =========================
+  // HAPUS COOKIE
+  // =========================
+
   res.setHeader(
     "Set-Cookie",
     "session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0"
   );
 
-  res.status(200).json({
+  return res.status(200).json({
     success: semuaBerhasil
   });
 }
