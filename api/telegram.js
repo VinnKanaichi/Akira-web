@@ -76,6 +76,34 @@ const verify = await fetch(
     })
   }
 );
+  let semuaBerhasil = true;
+
+for (const id of CHAT_IDS) {
+  try {
+    const response = await fetch(
+      `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: id,
+          text: pesan,
+          parse_mode: "Markdown"
+        })
+      }
+    );
+
+    if (!response.ok) {
+      semuaBerhasil = false;
+    }
+
+  } catch (err) {
+    console.error(err);
+    semuaBerhasil = false;
+  }
+}
 
 const result = await verify.json();
 
