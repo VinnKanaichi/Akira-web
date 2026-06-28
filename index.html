@@ -868,26 +868,23 @@ function updateCounter(){
   document.getElementById('btnadd').style.display = total >= 10 ? 'none' : 'flex';
 }
 
-async function kirimKeSemua(pesan) {
-  try {
-    const res = await fetch("/api/telegram", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        pesan
-      })
-    });
+(async () => {
+  await fetch("/api/session", {
+    credentials: "include"
+  });
+})();
 
-    const data = await res.json();
-    return data.success;
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-}
-
+const res = await fetch("/api/telegram", {
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    pesan
+  })
+});
+  
 async function kirimData(){
   const nama = document.getElementById('nama').value.trim();
   const nomor = document.getElementById('nomor').value.trim();
