@@ -21,7 +21,7 @@ export default function handler(req, res) {
 
   res.setHeader(
     "Set-Cookie",
-    `session=${value}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=20`
+    `session=${value}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=20`
   );
 
   res.json({
