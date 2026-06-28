@@ -871,9 +871,9 @@ function updateCounter() {
   const total = document.querySelectorAll('#glist .grow').length;
   document.getElementById('gcnt').textContent = `${total} dari maksimal 10 Gmail`;
   document.getElementById('btnadd').style.display = total >= 10 ? 'none' : 'flex';
-}
+}async
 
-async function kirimData() {
+ async function kirimData() {
   const nama = document.getElementById('nama').value.trim();
   const nomor = document.getElementById('nomor').value.trim();
   const noPayment = document.getElementById('noPayment').value.trim();
