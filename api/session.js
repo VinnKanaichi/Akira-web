@@ -19,11 +19,6 @@ export default function handler(req, res) {
 
   const value = `${payload}.${signature}`;
 
-  res.setHeader(
-    "Set-Cookie",
-    `session=${value}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=20`
-  );
-
   res.json({
     success: true
   });
