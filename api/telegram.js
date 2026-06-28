@@ -61,26 +61,30 @@ export default async function handler(req, res) {
     process.env.CHAT_ID_2
   ].filter(Boolean);
 
-  const { pesan } = req.body;
+  const { pesan, token } = req.body;
 
-  let semuaBerhasil = true;
+const verify = await fetch(
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      secret: process.env.TURNSTILE_SECRET,
+      response: token
+    })
+  }
+);
 
-  for (const id of CHAT_IDS) {
-    try {
-      const response = await fetch(
-        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            chat_id: id,
-            text: pesan,
-            parse_mode: "Markdown"
-          })
-        }
-      );
+const result = await verify.json();
+
+if (!result.success) {
+  return res.status(403).json({
+    success: false,
+    message: "Verifikasi Cloudflare gagal."
+  });
+}
 
       if (!response.ok) semuaBerhasil = false;
     } catch (err) {
