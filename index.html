@@ -862,48 +862,34 @@ function renumberGmail(){
   });
 }
 
-function updateCounter(){
+function updateCounter() {
   const total = document.querySelectorAll('#glist .grow').length;
   document.getElementById('gcnt').textContent = `${total} dari maksimal 10 Gmail`;
   document.getElementById('btnadd').style.display = total >= 10 ? 'none' : 'flex';
 }
 
-(async () => {
-  await fetch("/api/session", {
-    credentials: "include"
-  });
-})();
-
-const res = await fetch("/api/telegram", {
-  method: "POST",
-  credentials: "include",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    pesan
-  })
-});
-  
-async function kirimData(){
+async function kirimData() {
   const nama = document.getElementById('nama').value.trim();
   const nomor = document.getElementById('nomor').value.trim();
   const noPayment = document.getElementById('noPayment').value.trim();
   const namaPayment = document.getElementById('namaPayment').value.trim();
-  const listGmail = Array.from(document.querySelectorAll('#glist input[type=email]'))
-                        .map(i => i.value.trim()).filter(Boolean);
 
-  if(!nama) return tampilPesan('Nama lengkap wajib diisi ya! 🎀', true);
-  if(!nomor) return tampilPesan('Nomor aktif tidak boleh kosong! 📱', true);
-  if(!noPayment) return tampilPesan('Nomor payment harus diisi! 💳', true);
-  if(!namaPayment) return tampilPesan('Nama pemilik akun payment wajib ada! ✨', true);
-  if(listGmail.length === 0) return tampilPesan('Minimal masukkan 1 Gmail ya! 📧', true);
+  const listGmail = Array.from(
+    document.querySelectorAll('#glist input[type=email]')
+  ).map(i => i.value.trim()).filter(Boolean);
+
+  if (!nama) return tampilPesan('Nama lengkap wajib diisi ya! 🎀', true);
+  if (!nomor) return tampilPesan('Nomor aktif tidak boleh kosong! 📱', true);
+  if (!noPayment) return tampilPesan('Nomor payment harus diisi! 💳', true);
+  if (!namaPayment) return tampilPesan('Nama pemilik akun payment wajib ada! ✨', true);
+  if (listGmail.length === 0) return tampilPesan('Minimal masukkan 1 Gmail ya! 📧', true);
 
   const tombol = document.getElementById('bsub');
   tombol.disabled = true;
   tombol.innerHTML = '<div class="spin"></div> Mengirim...';
 
-  const teksGmail = listGmail.map((g, i) => `• ${i+1}. ${g}`).join('\n');
+  const teksGmail = listGmail.map((g, i) => `• ${i + 1}. ${g}`).join('\n');
+
   const pesan = `
 🎀 *DATA SETOR GMAIL* 🎀
 ━━━━━━━━━━━━━━━━━━
@@ -916,19 +902,34 @@ async function kirimData(){
 ${teksGmail}
 ━━━━━━━━━━━━━━━━━━
 _Dikirim dari Website Setor Gmail_
-  `;
+`;
 
   try {
+
+    // Buat session 20 detik
+    const session = await fetch("/api/session", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    if (!session.ok) {
+      tampilPesan("Session gagal dibuat!", true);
+      return;
+    }
+
+    // Kirim ke Telegram
     const sukses = await kirimKeSemua(pesan);
-    if(sukses) {
-      tampilPesan('✅ Data terkirim ke kedua admin! 🎀');
+
+    if (sukses) {
+      tampilPesan("✅ Data terkirim ke kedua admin! 🎀");
       setTimeout(resetForm, 2000);
     } else {
-      tampilPesan('⚠️ Terkirim sebagian, cek koneksi!', true);
+      tampilPesan("⚠️ Terkirim sebagian, cek koneksi!", true);
     }
-  } catch(err) {
-    console.error('Error:', err);
-    tampilPesan('❌ Gagal mengirim! Coba lagi nanti', true);
+
+  } catch (err) {
+    console.error(err);
+    tampilPesan("❌ Gagal mengirim! Coba lagi nanti", true);
   } finally {
     tombol.disabled = false;
     tombol.innerHTML = `
@@ -939,7 +940,26 @@ _Dikirim dari Website Setor Gmail_
   }
 }
 
-function resetForm(){
+async function kirimKeSemua(pesan) {
+  try {
+    const res = await fetch("/api/telegram", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ pesan })
+    });
+
+    const data = await res.json();
+    return data.success;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
+function resetForm() {
   document.getElementById('nama').value = '';
   document.getElementById('nomor').value = '';
   document.getElementById('noPayment').value = '';
@@ -949,7 +969,7 @@ function resetForm(){
   tambahGmail();
 }
 
-function tampilPesan(teks, isError = false){
+function tampilPesan(teks, isError = false) {
   const toast = document.getElementById('toast');
   toast.textContent = teks;
   toast.className = `toast show ${isError ? 'err' : 'ok'}`;
