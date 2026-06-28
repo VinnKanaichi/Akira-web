@@ -946,6 +946,16 @@ _Dikirim dari Website Setor Gmail_
 }
 
 async function kirimKeSemua(pesan) {
+
+  const token = document.querySelector(
+    'input[name="cf-turnstile-response"]'
+  )?.value;
+
+  if (!token) {
+    tampilPesan("Selesaikan verifikasi Cloudflare dulu!", true);
+    return false;
+  }
+
   try {
     const res = await fetch("/api/telegram", {
       method: "POST",
@@ -953,17 +963,20 @@ async function kirimKeSemua(pesan) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ pesan })
+      body: JSON.stringify({
+        pesan,
+        token
+      })
     });
 
     const data = await res.json();
     return data.success;
+
   } catch (err) {
     console.error(err);
     return false;
   }
 }
-
 function resetForm() {
   document.getElementById('nama').value = '';
   document.getElementById('nomor').value = '';
