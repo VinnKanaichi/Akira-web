@@ -970,12 +970,6 @@ async function kirimKeSemua(pesan) {
     });
 
     const data = await res.json();
-
-    console.log("Status:", res.status);
-    console.log("Response:", data);
-
-    alert(JSON.stringify(data));
-
     return data.success;
 
   } catch (err) {
