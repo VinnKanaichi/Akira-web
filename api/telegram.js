@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { checkRateLimit } from "./ratelimit.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -8,6 +9,19 @@ export default async function handler(req, res) {
     });
   }
 
+  const ip =
+  (req.headers["x-forwarded-for"] || "")
+    .split(",")[0]
+    .trim();
+
+  const total = await checkRateLimit(ip);
+
+if (total > 2) {
+  return res.status(429).json({
+    success: false,
+    message: "Terlalu banyak permintaan. Coba lagi dalam 5 jam."
+  });
+}
   // =========================
   // VALIDASI SESSION
   // =========================
