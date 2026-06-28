@@ -13,9 +13,7 @@ export default async function handler(req, res) {
   // =========================
 
   const cookie = req.headers.cookie || "";
-  console.log("COOKIE:", cookie);
   const match = cookie.match(/session=([^;]+)/);
-  console.log("MATCH:", match);
 
   if (!match) {
     return res.status(403).json({
@@ -25,7 +23,6 @@ export default async function handler(req, res) {
   }
 
   const session = match[1];
-  console.log("SESSION:", session);
   const parts = session.split(".");
 
   if (parts.length !== 3) {
