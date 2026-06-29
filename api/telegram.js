@@ -42,11 +42,19 @@ function detectRequestType(userAgent) {
 
 // Fungsi kirim alert ke Telegram
 async function sendAlert(ip, userAgent, sessionStatus, turnstileStatus, req) {
-  // Cek apakah ALERT_BOT_TOKEN ada
-  if (!ALERT_BOT_TOKEN || !ALERT_CHAT_ID) {
-    console.log('⚠️ Alert bot tidak dikonfigurasi');
-    return;
+  try {
+    if (!ALERT_BOT_TOKEN || !ALERT_CHAT_ID) {
+      console.log('⚠️ Alert bot tidak dikonfigurasi');
+      return;
+    }
+
+    // ... kode kirim alert
+
+  } catch (err) {
+    console.error('Alert gagal:', err.message);
+    // Jangan throw error, biarkan request tetap jalan
   }
+}
 
   const detection = detectRequestType(userAgent);
   const isScript = detection.type === 'script';
