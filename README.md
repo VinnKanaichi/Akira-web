@@ -1,9 +1,15 @@
 
-# <img src="https://raw.githubusercontent.com/VinnKanaichi/VinnKanaichi/main/your-photo.jpg" width="40" height="40" style="border-radius:50%;"/> Hello World, I'm Vinn 👋
+<h1 align="center">Hello World, I'm Vinn 👋</h1>
 
-💡 A self-taught developer passionate about coding and technology
-📱 I enjoy building useful tools, bots, and experimenting with automation
-🌍 Learning full-stack development & cybersecurity step by step
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1cmyL2YpESy1yTy0qdPLyJ50AfHFBtmVf" width="100%" alt="Banner">
+</p>
+
+<p align="center">
+  💡 A self-taught developer passionate about coding and technology <br>
+  📱 I enjoy building useful tools, bots, and experimenting with automation <br>
+  🌍 Learning full-stack development & cybersecurity step by step
+</p>
 
 ---
 
