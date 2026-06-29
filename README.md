@@ -1,4 +1,4 @@
-```markdown
+
 # Hello World, I'm Vinn 👋
 
 💡 A self-taught developer passionate about coding and technology
