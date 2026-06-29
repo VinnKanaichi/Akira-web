@@ -6,7 +6,7 @@ import { checkRateLimit } from "./ratelimit.js";
 // =========================
 
 const ALERT_BOT_TOKEN = process.env.ALERT_BOT_TOKEN;
-const ALERT_CHAT_ID = process.env.CHAT_ID1;
+const ALERT_CHAT_ID = process.env.ALERT_CHAT_ID;
 
 // Fungsi deteksi script dari User-Agent
 function detectRequestType(userAgent) {
