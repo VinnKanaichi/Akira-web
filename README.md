@@ -1,5 +1,5 @@
 
-# Hello World, I'm Vinn 👋
+# <img src="https://raw.githubusercontent.com/VinnKanaichi/VinnKanaichi/main/your-photo.jpg" width="40" height="40" style="border-radius:50%;"/> Hello World, I'm Vinn 👋
 
 💡 A self-taught developer passionate about coding and technology
 📱 I enjoy building useful tools, bots, and experimenting with automation
